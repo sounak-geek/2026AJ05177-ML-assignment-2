@@ -66,7 +66,7 @@ Hyperparameters: Logistic Regression (`max_iter=2000`), Decision Tree (`max_dept
 | Support Vector Machine | Best on accuracy (0.9833), F1 (0.9834) and MCC (0.9815) with only 9 errors out of 540. The RBF kernel captures the non-linear structure in the pixel space. Its AUC (0.9946) is marginally below Logistic Regression and KNN, which is a side effect of the probability calibration step. |
 | Overall, Winner for your dataset? | **Support Vector Machine** (accuracy 0.9833, MCC 0.9815), followed by KNN and Logistic Regression. The top three are within 7 test errors of each other, so the ranking is based on a single split. The Decision Tree and Naive Bayes are clearly behind. |
 
-## Streamlit app
+## Short description of what is done in the assignment
 
 `app.py` provides:
 
