@@ -79,6 +79,9 @@ Hyperparameters: Logistic Regression (`max_iter=2000`), Decision Tree (`max_dept
 
 Saved models are loaded from `model/`; nothing is retrained on the uploaded data.
 
+
+## How the things has been set up
+
 ### Run locally
 
 ```
