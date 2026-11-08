@@ -15,11 +15,10 @@ Build and compare five classification models that recognise handwritten digits (
 - **Preprocessing:** `StandardScaler` is part of the Logistic Regression, KNN and SVM pipelines, so each saved `.joblib` file is self-contained. The SVM is wrapped in `CalibratedClassifierCV` so it can output class probabilities for AUC.
 - **Multi-class metrics:** Precision, Recall, F1 and AUC are **macro-averaged** over the 10 classes (AUC is one-vs-rest). Accuracy and MCC are the standard multi-class versions.
 
-## c. GitHub repository link
+## c. GitHub repository link & Streamlit App link
 
-<PASTE YOUR GITHUB REPOSITORY LINK HERE>
-
-Live app: <PASTE YOUR STREAMLIT COMMUNITY CLOUD LINK HERE>
+* **GitHub Repository:** [https://github.com/sounak-geek/2026AJ05177-ML-assignment-2](https://github.com/sounak-geek/2026AJ05177-ML-assignment-2)
+* **Live Streamlit App:** [https://2026aj05177-ml-assignment-2.streamlit.app/](https://2026aj05177-ml-assignment-2.streamlit.app/)
 
 Repository structure:
 
