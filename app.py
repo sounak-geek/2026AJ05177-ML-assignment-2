@@ -100,11 +100,21 @@ with left:
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
     st.pyplot(fig)
+    st.markdown(
+        "**How to read:** Rows are the true digits; columns are the model's predictions. "
+        "Diagonal counts are correct predictions, while off-diagonal counts are errors. "
+        "Darker cells contain more samples."
+    )
 with right:
     st.subheader("Classification report")
     report = classification_report(y, pred, labels=LABELS, target_names=CLASS_NAMES,
                                    output_dict=True, zero_division=0)
     st.dataframe(pd.DataFrame(report).T.round(4))
+    st.markdown(
+        "**How to read:** Each digit has its own precision, recall, and F1 score. "
+        "Support is the number of true samples for that digit. Macro averages weight "
+        "digits equally; weighted averages account for their sample counts."
+    )
 
 # comparison of all models on the uploaded test data
 st.subheader("All models on the uploaded test data")
@@ -113,4 +123,8 @@ for name in MODEL_FILES:
     m, _ = compute_metrics(load_model(name), X, y)
     rows.append({"ML Model Name": name, **m})
 compare = pd.DataFrame(rows).set_index("ML Model Name").round(4)
-st.dataframe(compare)
+st.dataframe(compare.style.format("{:.4f}").highlight_max(axis=0, color="#BDF5EA"))
+st.markdown(
+    "**How to read:** The highlighted cell marks the highest score in that metric column. "
+    "Higher is better for every metric shown."
+)
