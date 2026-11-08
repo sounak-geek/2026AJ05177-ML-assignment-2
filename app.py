@@ -9,7 +9,10 @@ from sklearn.metrics import (accuracy_score, classification_report,
                              confusion_matrix, f1_score, matthews_corrcoef,
                              precision_score, recall_score, roc_auc_score)
 
-st.set_page_config(page_title="Handwritten Digits Classifier", layout="wide")
+from theme import HEATMAP_CMAP, footer, hero, inject_css
+
+st.set_page_config(page_title="Handwritten Digits Classifier", page_icon="\U0001F9E0", layout="wide")
+inject_css()
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE, "model")
@@ -44,11 +47,13 @@ def compute_metrics(model, X, y):
     }, pred
 
 
-st.title("Handwritten Digits (UCI Optical Recognition) - Classification Models")
-st.write(
-    "Upload the test CSV (64 pixel columns plus a `target` digit 0-9), pick a model and inspect "
-    "its evaluation. Precision, Recall, F1 and AUC are macro-averaged over the 10 classes "
-    "(AUC is one-vs-rest)."
+hero(
+    "Handwritten Digit",
+    "Classifier",
+    "Upload the test CSV (64 pixel columns plus a <code>target</code> digit 0-9), pick a model and "
+    "inspect its evaluation. Precision, Recall, F1 and AUC are macro-averaged over the 10 classes "
+    "(AUC is one-vs-rest).",
+    ["5 models", "10 classes", "64 pixel features", "UCI Optical Digits"],
 )
 
 # (a) dataset upload
@@ -95,7 +100,9 @@ with left:
     st.subheader("Confusion matrix")
     cm = confusion_matrix(y, pred, labels=LABELS)
     fig, ax = plt.subplots(figsize=(5, 4.5))
-    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False,
+    fig.patch.set_alpha(0)
+    sns.heatmap(cm, annot=True, fmt="d", cmap=HEATMAP_CMAP, cbar=False,
+                linewidths=0.6, linecolor="white",
                 xticklabels=CLASS_NAMES, yticklabels=CLASS_NAMES, ax=ax)
     ax.set_xlabel("Predicted")
     ax.set_ylabel("Actual")
@@ -128,3 +135,4 @@ st.markdown(
     "**How to read:** The highlighted cell marks the highest score in that metric column. "
     "Higher is better for every metric shown."
 )
+footer()
