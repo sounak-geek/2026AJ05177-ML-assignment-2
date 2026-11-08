@@ -105,3 +105,12 @@ with right:
     report = classification_report(y, pred, labels=LABELS, target_names=CLASS_NAMES,
                                    output_dict=True, zero_division=0)
     st.dataframe(pd.DataFrame(report).T.round(4))
+
+# comparison of all models on the uploaded test data
+st.subheader("All models on the uploaded test data")
+rows = []
+for name in MODEL_FILES:
+    m, _ = compute_metrics(load_model(name), X, y)
+    rows.append({"ML Model Name": name, **m})
+compare = pd.DataFrame(rows).set_index("ML Model Name").round(4)
+st.dataframe(compare)
