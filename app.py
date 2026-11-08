@@ -1,14 +1,21 @@
 import os
 
 import joblib
+import matplotlib.pyplot as plt
 import pandas as pd
+import seaborn as sns
 import streamlit as st
+from sklearn.metrics import (accuracy_score, classification_report,
+                             confusion_matrix, f1_score, matthews_corrcoef,
+                             precision_score, recall_score, roc_auc_score)
 
 st.set_page_config(page_title="Handwritten Digits Classifier", layout="wide")
 
 BASE = os.path.dirname(os.path.abspath(__file__))
 MODEL_DIR = os.path.join(BASE, "model")
 TARGET = "target"
+LABELS = list(range(10))
+CLASS_NAMES = [str(d) for d in LABELS]
 
 MODEL_FILES = {
     "Logistic Regression": "logistic_regression.joblib",
@@ -22,6 +29,19 @@ MODEL_FILES = {
 @st.cache_resource
 def load_model(name):
     return joblib.load(os.path.join(MODEL_DIR, MODEL_FILES[name]))
+
+
+def compute_metrics(model, X, y):
+    pred = model.predict(X)
+    return {
+        "Accuracy": accuracy_score(y, pred),
+        "AUC": roc_auc_score(y, model.predict_proba(X), multi_class="ovr",
+                             average="macro", labels=LABELS),
+        "Precision": precision_score(y, pred, average="macro", zero_division=0),
+        "Recall": recall_score(y, pred, average="macro", zero_division=0),
+        "F1": f1_score(y, pred, average="macro", zero_division=0),
+        "MCC": matthews_corrcoef(y, pred),
+    }, pred
 
 
 st.title("Handwritten Digits (UCI Optical Recognition) - Classification Models")
@@ -61,4 +81,27 @@ st.dataframe(data.head())
 # (b) model selection dropdown
 choice = st.selectbox("Select a model", list(MODEL_FILES.keys()))
 model = load_model(choice)
-st.caption(f"Selected model: {choice}")
+metrics, pred = compute_metrics(model, X, y)
+
+# (c) evaluation metrics
+st.subheader(f"Evaluation metrics - {choice}")
+cols = st.columns(len(metrics))
+for col, (k, v) in zip(cols, metrics.items()):
+    col.metric(k, f"{v:.4f}")
+
+# (d) confusion matrix + classification report
+left, right = st.columns(2)
+with left:
+    st.subheader("Confusion matrix")
+    cm = confusion_matrix(y, pred, labels=LABELS)
+    fig, ax = plt.subplots(figsize=(5, 4.5))
+    sns.heatmap(cm, annot=True, fmt="d", cmap="Blues", cbar=False,
+                xticklabels=CLASS_NAMES, yticklabels=CLASS_NAMES, ax=ax)
+    ax.set_xlabel("Predicted")
+    ax.set_ylabel("Actual")
+    st.pyplot(fig)
+with right:
+    st.subheader("Classification report")
+    report = classification_report(y, pred, labels=LABELS, target_names=CLASS_NAMES,
+                                   output_dict=True, zero_division=0)
+    st.dataframe(pd.DataFrame(report).T.round(4))
